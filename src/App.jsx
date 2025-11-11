@@ -1,28 +1,50 @@
-import { useState } from 'react'
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Layout from './components/Layout'
+import Hero from './components/Hero'
+import ProductGrid from './components/ProductGrid'
+import Lookbook from './components/Lookbook'
+import About from './components/About'
+import Contact from './components/Contact'
+import { CartProvider, useCart } from './contexts/CartContext'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function HomePage() {
+  const { addItem } = useCart()
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
+    <>
+      <Hero />
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-16">
+        <h3 className="text-white text-xl font-semibold mb-6 tracking-tight">Latest</h3>
+        <ProductGrid onAdd={addItem} />
+      </section>
+      <Lookbook />
+    </>
   )
 }
 
-export default App
+function ShopPage() {
+  const { addItem } = useCart()
+  return <ProductGrid onAdd={addItem} />
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="about" element={<About />} />
+        <Route path="shop" element={<ShopPage />} />
+        <Route path="lookbook" element={<Lookbook />} />
+        <Route path="contact" element={<Contact />} />
+      </Route>
+    </Routes>
+  )
+}
+
+export default function App() {
+  return (
+    <CartProvider>
+      <AppRoutes />
+    </CartProvider>
+  )
+}
